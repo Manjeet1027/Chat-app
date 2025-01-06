@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import authRoutes from "./routes/auth.route.js"
+import messageRoutes from "./routes/message.route.js"
 import {connectDB} from "./lib/db.js"
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(cookieParser());  // help to parse the cookie
 
 
 app.use("/api/auth", authRoutes);
+app.use("/api/message", messageRoutes);
 
 
 app.listen(PORT, () => {
