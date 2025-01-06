@@ -48,7 +48,7 @@ export const signup = async(req,res) => {
     res.status(500).json({ message: "Internal Server Error"});
   }
 };
-
+ 
 export const login = async (req,res) => {
   const {email, password} = req.body;
 
@@ -64,6 +64,7 @@ export const login = async (req,res) => {
     if(!isPassCorrect){
       return res.status(400).json({message:"Invalid Credentials"});
     }
+  
 
     generateToken(user._id, res);
 
@@ -80,7 +81,7 @@ export const login = async (req,res) => {
   }
 };
 
-export const logout = (req,res) => {
+export const logout = async (req,res) => {
   try{
     res.cookie("jwt","",{maxAge: 0});
     res.status(200).json({message:"Logged out succcessfully"});
@@ -90,3 +91,34 @@ export const logout = (req,res) => {
     res.status(500).json({Message:"Internal Server Error"});
   }
 };
+
+export const updateProfile = async(req, res) => {
+  try{
+    const {profilePic} = req.body;
+    const userId = req.user._id;  // user added to req in protected route 
+
+    if(!profilePic){
+      return res.status(400).json({message:"Profile Pic is required"});
+    }
+
+    const uploadResponse = await cloudinary.uploader.upload(profilePic);   // cloudinary is not our DB it is just a bucket to store the profile pictures
+    const updateUser = await User.findByIdAndUpdate(userId, {profilepic: uploadResponse},{new: true});
+
+    res.status(200).json(updateUser);
+
+  }
+  catch(err){
+    console.log("Error in update profile", err);
+    res.status(500).json({message:"Internal Server Error"})
+  }
+}
+
+export const checkAuth = (req, res) => {
+  try{
+    res.status(200).json(req.user);
+  }
+  catch(err){
+    console.log("Error in checkAuth", err.message);
+    res.status(500).json({message:"Internal Server Error"});
+  }
+}
