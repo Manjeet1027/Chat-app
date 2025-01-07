@@ -102,7 +102,7 @@ export const updateProfile = async(req, res) => {
     }
 
     const uploadResponse = await cloudinary.uploader.upload(profilePic);   // cloudinary is not our DB it is just a bucket to store the profile pictures
-    const updateUser = await User.findByIdAndUpdate(userId, {profilepic: uploadResponse},{new: true});
+    const updateUser = await User.findByIdAndUpdate(userId, {profilePic: uploadResponse.secure_url},{new: true});
 
     res.status(200).json(updateUser);
 
@@ -113,6 +113,7 @@ export const updateProfile = async(req, res) => {
   }
 }
 
+
 export const checkAuth = (req, res) => {
   try{
     res.status(200).json(req.user);
@@ -122,3 +123,4 @@ export const checkAuth = (req, res) => {
     res.status(500).json({message:"Internal Server Error"});
   }
 }
+
