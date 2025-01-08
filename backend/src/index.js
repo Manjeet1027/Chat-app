@@ -8,8 +8,9 @@ import cors from "cors"
 import authRoutes from "./routes/auth.route.js"
 import messageRoutes from "./routes/message.route.js"
 import {connectDB} from "./lib/db.js"
+import {app, server} from "./lib/socket.js"
 
-const app = express();
+// const app = express();
 const PORT = process.env.PORT;
 
 
@@ -24,7 +25,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
 
-app.listen(PORT, () => {
+// app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log("Server is runing on port:" + PORT);
   connectDB();
 });

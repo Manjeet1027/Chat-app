@@ -2,11 +2,14 @@ import User from "../models/user.model.js";
 import Message from "../models/message.model.js"
 
 import cloudinary from "../lib/cloudinary.js"
+import { getReceiverSocketId, io } from "../lib/socket.js";
 
 export const getUsersForSidebar = async (req, res) =>{
   try{
     const loggedInUserId = req.user._id;
     const filteredUsers = await User.find({_id : {$ne: loggedInUserId}}).select("-password"); // collect all the users credential except the password and the one which is Logged In
+
+    res.status(200).json(filteredUsers);
   }
   catch(err){
     console.log("Error in getUsersForSidebar: ", err.message);
@@ -56,7 +59,11 @@ export const sendMessage = async(req, res) => {
 
     await newMessage.save();
 
-    // todo : realtime functionality using socket.io
+    //  realtime functionality using socket.io
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
 
     res.status(201).json(newMessage);
   }
