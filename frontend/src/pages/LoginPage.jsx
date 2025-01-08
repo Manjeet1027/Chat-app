@@ -4,6 +4,7 @@ import AuthImagePattern from "../components/AuthImagePattern";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare } from "lucide-react";
 
+
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -16,6 +17,19 @@ const LoginPage = () => {
     e.preventDefault();
     login(formData);
   };
+
+  const getGuestDetails = async (e) => {
+    e.preventDefault();
+
+    const guestDetails = {
+      email: "sample@gmail.com",
+      password: "123456",
+    };
+    setFormData(guestDetails);
+    
+    login(guestDetails);
+  }
+
 
   return (
     <div className="h-screen grid lg:grid-cols-2">
@@ -49,7 +63,7 @@ const LoginPage = () => {
                 <input
                   type="email"
                   className={`input input-bordered w-full pl-10`}
-                  placeholder="you@example.com"
+                  placeholder="sample@gmail.com"
                   value={formData.email}
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
@@ -103,6 +117,22 @@ const LoginPage = () => {
                 "Sign in"
               )}
             </button>
+            <button
+              type="button"
+              className="btn btn-primary w-full"
+              disabled={isLoggingIn}
+              onClick={getGuestDetails}
+            >
+              {isLoggingIn ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                "Use Guest Details"
+              )}
+            </button>
+
           </form>
 
           <div className="text-center">
