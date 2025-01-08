@@ -21,7 +21,7 @@ app.use(express.json());  // help in extracting the json data out of body in aut
 app.use(cookieParser());  // help to parse the cookie
 
 app.use("/api/auth", authRoutes);
-app.use("/api/message", messageRoutes);
+app.use("/api/messages", messageRoutes);
 
 
 app.listen(PORT, () => {
