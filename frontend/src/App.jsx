@@ -17,6 +17,7 @@ const App = () => {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
   const {theme} = useThemeStore();
 
+  // when the page refreshes check if the user is logged in
   useEffect(() => {
     checkAuth();
   },[checkAuth])

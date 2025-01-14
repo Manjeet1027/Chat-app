@@ -3,6 +3,7 @@ import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { Users } from "lucide-react";
+import useIsLargeScreen from "../lib/largeScreen";
 
 const Sidebar = () => {
   const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } =
@@ -10,6 +11,8 @@ const Sidebar = () => {
 
   const { onlineUsers } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
+  const isLargeScreen = useIsLargeScreen();
+  
 
   useEffect(() => {
     getUsers();
@@ -22,7 +25,10 @@ const Sidebar = () => {
   if (isUsersLoading) return <SidebarSkeleton />;
 
   return (
-    <aside className="h-full w-22 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
+    <aside
+      className={`h-full transition-all duration-200 flex flex-col border-r border-base-300 
+      ${selectedUser ? "max-w-[400px] lg:w-[400px]" : "w-full max-w-[400px]"}`}
+    >
       <div className="border-b border-base-300 w-full p-5">
         <div className="flex items-center gap-2">
           <Users className="size-6" />
@@ -51,7 +57,7 @@ const Sidebar = () => {
             key={user._id}
             onClick={() => setSelectedUser(user)}
             className={`
-              w-full p-3 flex items-center gap-3
+              w-full p-3 flex items-center 
               hover:bg-base-300 transition-colors
               ${
                 selectedUser?._id === user._id
@@ -60,7 +66,7 @@ const Sidebar = () => {
               }
             `}
           >
-            <div className="relative mx-auto lg:mx-0">
+            <div className="relative mr-3">
               <img
                 src={user.profilePic || "/avatar.png"}
                 alt={user.name}
@@ -75,7 +81,13 @@ const Sidebar = () => {
             </div>
 
             {/* User info - only visible on larger screens */}
-            <div className="hidden lg:block text-left min-w-0">
+            <div
+              className={` text-left min-w-0 ${
+                selectedUser
+                  ? (isLargeScreen ? "block" : "hidden")
+                  : "block"
+              } `}
+            >
               <div className="font-medium truncate">{user.fullName}</div>
               <div className="text-sm text-zinc-400">
                 {onlineUsers.includes(user._id) ? "Online" : "Offline"}
@@ -92,3 +104,4 @@ const Sidebar = () => {
   );
 };
 export default Sidebar;
+
